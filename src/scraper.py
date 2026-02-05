@@ -6,9 +6,9 @@ from datetime import datetime
 
 app_ids = ['com.microsoft.office.onenote', 'notion.id', 'com.evernote']
 
-#Save files under the workspace folder 'LAB1/data/raw'
-raw_apps_path = os.path.join("LAB1", "data", "raw", "apps_raw.json")
-raw_reviews_path = os.path.join("LAB1", "data", "raw", "reviews_raw.json")
+#Save files under the data/raw folder
+raw_apps_path = os.path.join("..", "data", "raw", "apps_raw.json")
+raw_reviews_path = os.path.join("..", "data", "raw", "reviews_raw.json")
 
 #Ensure the data/raw directory exists
 os.makedirs(os.path.dirname(raw_apps_path), exist_ok=True)

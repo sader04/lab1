@@ -3,9 +3,9 @@ import os
 import pandas as pd
 
 # Define paths
-raw_apps_path = os.path.join("LAB1", "data", "raw", "apps_raw.json")
-raw_reviews_path = os.path.join("LAB1", "data", "raw", "reviews_raw.json")
-processed_dir = os.path.join("LAB1", "data", "processed")
+raw_apps_path = os.path.join("..", "data", "raw", "apps_raw.json")
+raw_reviews_path = os.path.join("..", "data", "raw", "reviews_raw.json")
+processed_dir = os.path.join("..", "data", "processed")
 
 # Ensure output directory exists
 os.makedirs(processed_dir, exist_ok=True)

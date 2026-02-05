@@ -3,8 +3,8 @@ import plotly.express as px
 import os
 
 # Load processed data
-app_kpis = pd.read_csv(os.path.join("App Market Research", "data", "processed", "app_kpis.csv"))
-daily_metrics = pd.read_csv(os.path.join("App Market Research", "data", "processed", "daily_metrics.csv"))
+app_kpis = pd.read_csv(os.path.join("..", "data", "processed", "app_kpis.csv"))
+daily_metrics = pd.read_csv(os.path.join("..", "data", "processed", "daily_metrics.csv"))
 
 # Ensure 'date' is datetime
 daily_metrics['date'] = pd.to_datetime(daily_metrics['date'])
