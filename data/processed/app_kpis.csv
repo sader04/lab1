@@ -1,0 +1,4 @@
+appId,title,num_reviews,avg_rating,pct_low_rating,first_review_date,latest_review_date
+com.evernote,Evernote - Note Organizer,100,1.75,82.0,2025-12-27 16:57:17,2026-01-10 20:41:44
+com.microsoft.office.onenote,Microsoft OneNote: Save Notes,100,3.64,28.0,2026-01-04 18:42:54,2026-01-10 23:36:55
+notion.id,"Notion: Notes, Tasks, AI",100,3.94,24.0,2026-01-01 18:27:46,2026-01-10 18:28:00
