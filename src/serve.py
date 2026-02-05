@@ -1,12 +1,12 @@
 import os
 import pandas as pd
 
-# Define paths
-processed_dir = os.path.join("App Market Research", "data", "processed")
+#Define paths
+processed_dir = os.path.join("LAB1", "data", "processed")
 apps_csv = os.path.join(processed_dir, "apps_catalog.csv")
 reviews_csv = os.path.join(processed_dir, "apps_reviews.csv")
 
-# Load processed data
+#load processed data
 apps_df = pd.read_csv(apps_csv)
 reviews_df = pd.read_csv(reviews_csv)
 
