@@ -1,57 +1,82 @@
-from google_play_scraper import app, reviews        
+from google_play_scraper import search, app, reviews, Sort
 import json
-import os
+from pathlib import Path
 from datetime import datetime
 
+# ==============================
+# Configuration
+# ==============================
+QUERY = "ai note taking"
+N_APPS = 20
+REVIEWS_PER_PAGE = 200
 
-app_ids = ['com.microsoft.office.onenote', 'notion.id', 'com.evernote']
+BASE_DIR = Path(__file__).resolve().parents[1]
+RAW_DIR = BASE_DIR / "data" / "raw"
+RAW_DIR.mkdir(parents=True, exist_ok=True)
 
-#Save files under the data/raw folder
-raw_apps_path = os.path.join("..", "data", "raw", "apps_raw.json")
-raw_reviews_path = os.path.join("..", "data", "raw", "reviews_raw.json")
+APPS_PATH = RAW_DIR / "apps_raw.json"
+REVIEWS_PATH = RAW_DIR / "reviews_raw.jsonl"   #  JSONL (append-safe)
 
-#Ensure the data/raw directory exists
-os.makedirs(os.path.dirname(raw_apps_path), exist_ok=True)
-os.makedirs(os.path.dirname(raw_reviews_path), exist_ok=True)
+# ==============================
+# 1. Search apps by query
+# ==============================
+results = search(
+    QUERY,
+    lang="en",
+    country="us",
+    n_hits=N_APPS
+)
 
+app_ids = [r["appId"] for r in results]
+print(f"Found {len(app_ids)} apps for query '{QUERY}'")
+
+# ==============================
+# 2. Extract apps metadata
+# ==============================
 all_apps = []
-all_reviews = []
 
 for app_id in app_ids:
     try:
-        print(f"Fetching metadata for {app_id}...")
-        app_metadata = app(app_id, lang='en', country='us')
-        all_apps.append(app_metadata)
-        
-        print(f"Fetching reviews for {app_id}...")
-        app_reviews, _ = reviews(
-            app_id,
-            lang='en',
-            country='us',
-            count=100
-        )
-        
-        #CRITICAL: Add appId to each review so we know its source
-        for r in app_reviews:
-            r['appId'] = app_id  #Tag the review with its app ID
-        
-        all_reviews.extend(app_reviews)
-        
+        print(f"Fetching metadata for {app_id}")
+        meta = app(app_id, lang="en", country="us")
+        meta["_extracted_at"] = datetime.utcnow().isoformat()
+        all_apps.append(meta)
     except Exception as e:
-        print(f"Error fetching data for {app_id}: {e}")
+        print(f"[ERROR] App metadata {app_id}: {e}")
 
-#Save apps metadata
-with open(raw_apps_path, 'w', encoding='utf-8') as f:
+# Save apps metadata (JSON)
+with APPS_PATH.open("w", encoding="utf-8") as f:
     json.dump(all_apps, f, ensure_ascii=False, indent=2)
 
-#Helper to serialize datetime objects
-def convert_datetime_to_string(obj):
-    if isinstance(obj, datetime):
-        return obj.isoformat()
-    raise TypeError(f'Object of type {obj.__class__.__name__} is not JSON serializable')
+# ==============================
+# 3. Extract reviews with pagination + append
+# ==============================
+with REVIEWS_PATH.open("a", encoding="utf-8") as f:
+    for app_id in app_ids:
+        print(f"Fetching reviews for {app_id}")
+        continuation_token = None
 
-#Save reviews with appId included
-with open(raw_reviews_path, 'w', encoding='utf-8') as f:
-    json.dump(all_reviews, f, default=convert_datetime_to_string, ensure_ascii=False, indent=2)
+        while True:
+            try:
+                result, continuation_token = reviews(
+                    app_id,
+                    lang="en",
+                    country="us",
+                    sort=Sort.NEWEST,
+                    count=REVIEWS_PER_PAGE,
+                    continuation_token=continuation_token
+                )
 
-print(f"Ingested {len(all_apps)} apps and {len(all_reviews)} reviews")
+                for r in result:
+                    r["appId"] = app_id
+                    r["_extracted_at"] = datetime.utcnow().isoformat()
+                    f.write(json.dumps(r, default=str, ensure_ascii=False) + "\n")
+
+                if continuation_token is None:
+                    break
+
+            except Exception as e:
+                print(f"[ERROR] Reviews {app_id}: {e}")
+                break
+
+print("✅ Ingestion completed (apps JSON + reviews JSONL)")

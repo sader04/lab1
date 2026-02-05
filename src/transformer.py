@@ -1,64 +1,142 @@
 import json
-import os
 import pandas as pd
+from pathlib import Path
 
-# Define paths
-raw_apps_path = os.path.join("..", "data", "raw", "apps_raw.json")
-raw_reviews_path = os.path.join("..", "data", "raw", "reviews_raw.json")
-processed_dir = os.path.join("..", "data", "processed")
+# ==============================
+# Paths
+# ==============================
+BASE_DIR = Path(__file__).resolve().parents[1]
+RAW_DIR = BASE_DIR / "data" / "raw"
+PROCESSED_DIR = BASE_DIR / "data" / "processed"
+PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 
-# Ensure output directory exists
-os.makedirs(processed_dir, exist_ok=True)
 
-# Load raw data
-with open(raw_apps_path, 'r', encoding='utf-8') as f:
+# ==============================
+# Configuration
+# ==============================
+USE_CSV_BATCH = True
+# False → normal pipeline (JSONL)
+# True  → C1 New Reviews Batch (CSV)
+APPS_RAW = RAW_DIR / "apps_raw.json"
+REVIEWS_JSONL = RAW_DIR / "reviews_raw.jsonl"
+REVIEWS_CSV = RAW_DIR / "note_taking_ai_reviews_batch2.csv"
+#REVIEWS_CSV = RAW_DIR / "note_taking_ai_reviews_schema_drift.csv"
+
+
+
+
+# ==============================
+# Load apps metadata (JSON)
+# ==============================
+with APPS_RAW.open("r", encoding="utf-8") as f:
     apps_data = json.load(f)
 
-with open(raw_reviews_path, 'r', encoding='utf-8') as f:
-    reviews_data = json.load(f)
-
-# Helper: clean installs string (e.g., "10,000,000+" → 10000000)
-def clean_installs(installs_str):
-    if not isinstance(installs_str, str):
-        return 0
-    cleaned = installs_str.replace(",", "").rstrip("+")
-    return int(cleaned) if cleaned.isdigit() else 0
-
-# Clean app data
-for app in apps_data:
-    app['installs'] = clean_installs(app.get('installs', '0'))
-
-# Build appId → title lookup
-app_lookup = {app['appId']: app['title'] for app in apps_data}
-
-# Enrich reviews with app_id and app_name
-enriched_reviews = []
-for review in reviews_data:
-    app_id = review.get('appId')
-    if app_id in app_lookup:
-        enriched_reviews.append({
-            'app_id': app_id,
-            'app_name': app_lookup[app_id],
-            'reviewId': review.get('reviewId'),
-            'userName': review.get('userName'),
-            'score': review.get('score'),
-            'content': review.get('content', ''),
-            'thumbsUpCount': review.get('thumbsUpCount', 0),
-            'at': review.get('at')  # Keep as ISO string; parse later if needed
-        })
-    else:
-        print(f"Warning: Review with appId '{app_id}' has no matching app metadata — skipped.")
-
-# Convert to DataFrames
 apps_df = pd.DataFrame(apps_data)
-reviews_df = pd.DataFrame(enriched_reviews)
 
-# Select only required columns in specified order
-apps_df = apps_df[['appId', 'title', 'developer', 'score', 'ratings', 'installs', 'genre', 'price']]
-reviews_df = reviews_df[['app_id', 'app_name', 'reviewId', 'userName', 'score', 'content', 'thumbsUpCount', 'at']]
+apps_df = apps_df[[
+    "appId", "title", "developer",
+    "score", "ratings", "installs",
+    "genre", "price"
+]]
 
-# Save to CSV
-apps_df.to_csv(os.path.join(processed_dir, "apps_catalog.csv"), index=False, encoding='utf-8')
-reviews_df.to_csv(os.path.join(processed_dir, "apps_reviews.csv"), index=False, encoding='utf-8')
+apps_df["score"] = pd.to_numeric(apps_df["score"], errors="coerce")
+apps_df["ratings"] = pd.to_numeric(apps_df["ratings"], errors="coerce")
 
-print(f"✅ Transformed {len(apps_df)} apps and {len(reviews_df)} reviews into CSV files.")
+apps_df = apps_df.drop_duplicates(subset=["appId"], keep="last")
+
+# ==============================
+# Load reviews (JSONL or CSV)
+# ==============================
+# ==============================
+# Load reviews (explicit source selection)
+# ==============================
+if USE_CSV_BATCH:
+    if not REVIEWS_CSV.exists():
+        raise FileNotFoundError(
+            "C1 expects CSV batch as sole reviews source"
+        )
+    print("🔄 Using CSV reviews batch (C1)")
+    reviews_df = pd.read_csv(REVIEWS_CSV)
+else:
+    if not REVIEWS_JSONL.exists():
+        raise FileNotFoundError(
+            "JSONL reviews file not found"
+        )
+    print("🔄 Using JSONL reviews")
+    reviews_df = pd.read_json(
+        REVIEWS_JSONL,
+        lines=True,
+        encoding="utf-8"
+    )
+
+
+# ==============================
+# Normalize reviews schema
+# ==============================
+# Rename if needed (schema drift protection)
+reviews_df = reviews_df.rename(columns={
+    "appId": "app_id",
+    "review_id": "reviewId",
+    "user_name": "userName",
+    "rating": "score",
+    "text": "content",
+    "thumbs_up": "thumbsUpCount",
+    "created_at": "at"
+})
+
+required_columns = [
+    "app_id", "reviewId", "userName",
+    "score", "content", "thumbsUpCount", "at"
+]
+
+reviews_df = reviews_df[[c for c in required_columns if c in reviews_df.columns]]
+
+reviews_df["score"] = pd.to_numeric(reviews_df["score"], errors="coerce")
+reviews_df["thumbsUpCount"] = pd.to_numeric(
+    reviews_df.get("thumbsUpCount", 0),
+    errors="coerce"
+).fillna(0)
+
+reviews_df["at"] = pd.to_datetime(reviews_df["at"], errors="coerce")
+
+# ==============================
+# Deduplication
+# ==============================
+if "reviewId" in reviews_df.columns:
+    reviews_df = reviews_df.drop_duplicates(
+        subset=["reviewId"],
+        keep="last"
+    )
+
+# ==============================
+# Enrich with app_name
+# ==============================
+app_lookup = apps_df.set_index("appId")["title"].to_dict()
+
+reviews_df["app_name"] = reviews_df["app_id"].map(app_lookup)
+reviews_df["app_name"] = reviews_df["app_name"].fillna("UNKNOWN_APP")
+
+reviews_df = reviews_df[[
+    "app_id", "app_name", "reviewId",
+    "userName", "score", "content",
+    "thumbsUpCount", "at"
+]]
+
+# ==============================
+# Save processed datasets
+# ==============================
+apps_df.to_csv(
+    PROCESSED_DIR / "apps_catalog.csv",
+    index=False
+)
+
+reviews_df.to_csv(
+    PROCESSED_DIR / "apps_reviews.csv",
+    index=False
+)
+
+print(
+    f"✅ C1 Transform completed: "
+    f"{len(apps_df)} apps, "
+    f"{len(reviews_df)} reviews"
+)
