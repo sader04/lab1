@@ -2,7 +2,7 @@ import os
 import pandas as pd
 
 #Define paths
-processed_dir = os.path.join("LAB1", "data", "processed")
+processed_dir = os.path.join("lab1", "data", "processed")
 apps_csv = os.path.join(processed_dir, "apps_catalog.csv")
 reviews_csv = os.path.join(processed_dir, "apps_reviews.csv")
 
