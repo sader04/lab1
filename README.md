@@ -141,15 +141,6 @@ The raw file is **not modified manually**.
 
 ---
 
-### Dashboard Results – C2
-
-![C2 Dashboard](screenshots/daily_rating_c2.png)
-
-**Observation:**
-After adapting the transformation logic, the pipeline successfully produces valid analytics outputs.
-This confirms that schema drift can be handled without affecting downstream consumers when responsibilities are well separated.
-
----
 
 ### C2 – Observations
 
