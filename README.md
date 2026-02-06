@@ -72,15 +72,7 @@ These dips may correspond to releases or updates that negatively impacted user e
 
 ---
 
-### Average Rating per App & Percentage of Low Ratings
 
-![Average Rating per App](screenshots/part%20AB%203.jpeg)
-
-**Observation:**
-Most applications show high average ratings.
-The percentage of low ratings (≤ 2) highlights apps with potential quality or usability issues, even when the overall rating remains high.
-
----
 
 ## 🔄 Part C1 – New Reviews Batch (CSV)
 
