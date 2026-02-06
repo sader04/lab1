@@ -2,8 +2,4 @@
 data_eng_env/
 __pycache__/
 
-*.png
-*.jpg
-*.jpeg
-*.gif
-*.svg
+
