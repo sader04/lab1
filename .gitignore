@@ -2,7 +2,6 @@
 data_eng_env/
 __pycache__/
 
-# Dashboard images (local only)
 *.png
 *.jpg
 *.jpeg
