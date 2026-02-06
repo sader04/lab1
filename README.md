@@ -14,11 +14,14 @@ Feedback:
 
 ---
 
-#  Lab 1 – Python-only Data Pipeline
+
+# Lab 1 – Python-only Data Pipeline
+
 **Product Analytics – AI Note-Taking Applications**
+
 ---
 
-##  Project Overview
+## 📌 Project Overview
 
 This project implements a **Python-only end-to-end data pipeline** following the main stages of the data engineering lifecycle:
 
@@ -26,40 +29,114 @@ This project implements a **Python-only end-to-end data pipeline** following the
 * Data transformation & cleaning
 * Serving layer (analytics-ready datasets)
 * Lightweight dashboarding
-* Pipeline stress testing (C1 / C2)
 
-The objective is to transform **raw, semi-structured data** into **reproducible, analytics-ready outputs**, while exposing common weaknesses of early-stage pipelines.
+The objective is to transform **raw, semi-structured data** into **reproducible, analytics-ready outputs**, while applying good data engineering practices such as modularity, robustness, and reproducibility.
 
 ---
 
-##  Project Structure
+## 📁 Project Structure
 
-```text
-lab1/
+```lab1/
 ├── data/
-│   ├── raw/                # Raw upstream data (JSON, JSONL, CSV)
+│   ├── raw/                # Raw upstream data (JSON, JSONL)
 │   └── processed/          # Cleaned & aggregated datasets
 ├── screenshots/            # Dashboard screenshots (README)
 ├── src/
-│   ├── scraper.py          # Data acquisition (Google Play)
-│   ├── transformer.py      # Transformation logic (A, B, C1)
-│   ├── tranformer_c2.py    # Schema drift adaptation (C2)
+│   ├── scraper.py          # Data acquisition (Google Play API)
+│   ├── transformer.py      # Data cleaning & transformation (A & B)
+│   ├── transformer_c2.py   # Schema drift handling (C2)
+│   ├── transformer_c3.py   # Dirty & inconsistent data handling (C3)
 │   ├── serve.py            # Serving layer (KPIs, daily metrics)
 │   └── dashboard.py        # Dashboard visualization
+├── STRESS_TESTING_C1.md    # Stress testing – New reviews batch (C1)
+├── STRESS_TESTING_C2.md    # Stress testing – Schema drift (C2)
 └── README.md
-```
+
 
 ---
 
-##  Part A & B – End-to-End Pipeline (Baseline)
+## 🧱 Part A – Environment Setup
+
+* Python version: **3.7+**
+* Dedicated virtual environment (`.venv`)
+* Dependencies installed incrementally
+* Pipeline executed using Python scripts (no notebooks)
+
+This setup ensures isolation of dependencies and reproducibility of results.
+
+---
+
+## 🔗 Part B – End-to-End Data Pipeline
 
 ### Data Sources
 
-* **Applications metadata** (JSON)
-* **User reviews** (JSONL)
+The pipeline focuses on **AI note-taking applications** available on the Google Play Store.
 
-Raw data is ingested without modification and stored in `data/raw/`.
-Transformation logic converts semi-structured inputs into tabular datasets stored in `data/processed/`.
+Two datasets are collected:
+
+* **Applications metadata**
+
+  * Application identifier
+  * Title, developer, genre
+  * Ratings, installs, price
+
+* **User reviews**
+
+  * Review text
+  * Rating score
+  * Timestamp
+  * User information
+
+Raw data is ingested **as-is** and stored in the `data/raw/` directory.
+
+---
+
+### Data Acquisition & Ingestion
+
+Applications are retrieved using a **query-based search** (`"ai note taking"`) rather than a predefined list of application IDs.
+This approach improves scalability and allows the pipeline to automatically adapt to new applications entering the market.
+
+For reviews:
+
+* Pagination is handled using **continuation tokens**
+* Reviews are collected until no more pages are available
+* Data is written in **append mode (JSONL)** to prevent data loss if execution stops unexpectedly
+
+This design enables the collection of larger datasets, resulting in richer downstream analyses.
+
+---
+
+### Data Transformation
+
+Raw semi-structured data is transformed into clean, tabular datasets:
+
+* Nested fields are flattened
+* Numeric values are type-casted
+* Timestamps are normalized
+* Duplicate reviews are removed
+* Data is enriched with application metadata when possible
+
+Cleaned datasets are written to `data/processed/` and can be regenerated from scratch.
+
+---
+
+### Serving Layer
+
+The pipeline produces analytics-ready datasets:
+
+* **Application-level KPIs**
+
+  * Number of reviews
+  * Average rating
+  * Percentage of low ratings
+  * First and most recent review dates
+
+* **Daily metrics**
+
+  * Daily number of reviews
+  * Daily average rating
+
+These outputs are designed for reporting and visualization purposes.
 
 ---
 
@@ -70,8 +147,8 @@ Transformation logic converts semi-structured inputs into tabular datasets store
 ![Daily Number of Reviews](screenshots/part%20AB%201.jpeg)
 
 **Observation:**
-The number of reviews increases over time, with clear spikes indicating periods of higher user activity.
-This suggests growing adoption of AI note-taking applications.
+The number of reviews increases over time, with visible spikes corresponding to periods of higher user activity.
+This indicates growing adoption and engagement with AI note-taking applications.
 
 ---
 
@@ -81,94 +158,16 @@ This suggests growing adoption of AI note-taking applications.
 
 **Observation:**
 User ratings remain globally stable around **4–4.5**, with occasional short drops.
-These dips may correspond to releases or updates that negatively impacted user experience.
+These fluctuations may be linked to application updates or changes affecting user experience.
 
 ---
 
+## ✅ Key Takeaways (Part A & B)
+
+* Query-based ingestion improves flexibility and scalability
+* Pagination with continuation tokens enables richer datasets
+* Append-mode writing increases robustness against failures
+* Clear separation between ingestion, transformation, serving, and visualization logic
+* The pipeline produces stable, analytics-ready data suitable for downstream use
 
 
-## 🔄 Part C1 – New Reviews Batch (CSV)
-
-In this scenario, the upstream reviews dataset is replaced by a **new CSV batch** (`note_taking_ai_reviews_batch2.csv`), treated as the **sole input source**.
-
-### Code Adaptation
-
-* Introduction of a configuration switch (`USE_CSV_BATCH`)
-* Explicit selection of reviews source (JSONL vs CSV)
-* No changes required in the serving layer or dashboard
-
----
-
-### Dashboard Results – C1
-
-![C1 Daily Rating](screenshots/daily_rating_c1.png)
-
-**Observation:**
-The CSV batch contains a very small number of reviews.
-As a result, metrics are less stable and less representative compared to the original JSONL dataset.
-This highlights the sensitivity of analytics to batch size and data volume.
-
----
-
-### C1 – Observations
-
-**How many changes were required?**
-Only minimal changes were needed, limited to the transformation layer.
-
-**Full refresh or implicit behavior?**
-The pipeline clearly performs a **full refresh**, recomputing all outputs from scratch at each run.
-
-**How are duplicate reviews handled?**
-Reviews are deduplicated using `reviewId`, keeping the most recent occurrence.
-
-**What about unknown applications?**
-Reviews referencing applications not present in the apps catalog are preserved and labeled as `UNKNOWN_APP`, making data quality issues explicit.
-
----
-
-## 🧬 Part C2 – Schema Drift in Reviews
-
-In this scenario, the reviews dataset (`note_taking_ai_reviews_schema_drift.csv`) introduces:
-
-* Renamed columns
-* Different field structure
-* Changed naming conventions
-
-The raw file is **not modified manually**.
-
----
-
-### Pipeline Behavior (Before Adaptation)
-
-* The pipeline fails explicitly due to missing expected columns
-* Errors surface during column selection and transformation
-* This reveals strong assumptions on column names
-
----
-
-### Adaptation Strategy
-
-* Schema normalization layer introduced
-* Flexible column mapping (e.g. `review_text → content`)
-* Changes localized to the transformation script (`tranformer_c2.py`)
-
----
-
-
-### C2 – Observations
-
-**Hard-coded assumptions:**
-Column names in the transformation layer were the main source of fragility.
-
-**Failure mode:**
-The pipeline failed **explicitly**, which is preferable to silently producing incorrect results.
-
-**Scope of changes:**
-All required changes were localized to the transformation layer, leaving serving and dashboard logic unchanged.
-
----
-
-By: 
-* DERBANI Salwa
-* KOUDIA Selma
-  
