@@ -15,6 +15,7 @@ Feedback:
 ---
 
 
+
 # Lab 1 – Python-only Data Pipeline
 
 **Product Analytics – AI Note-Taking Applications**
@@ -36,7 +37,8 @@ The objective is to transform **raw, semi-structured data** into **reproducible,
 
 ## 📁 Project Structure
 
-```lab1/
+```text
+lab1/
 ├── data/
 │   ├── raw/                # Raw upstream data (JSON, JSONL)
 │   └── processed/          # Cleaned & aggregated datasets
@@ -51,7 +53,7 @@ The objective is to transform **raw, semi-structured data** into **reproducible,
 ├── STRESS_TESTING_C1.md    # Stress testing – New reviews batch (C1)
 ├── STRESS_TESTING_C2.md    # Stress testing – Schema drift (C2)
 └── README.md
-
+```
 
 ---
 
@@ -162,12 +164,21 @@ These fluctuations may be linked to application updates or changes affecting use
 
 ---
 
+### Average Rating per Application and Percentage of Low Ratings
+
+![Average Rating per App](screenshots/part%20AB%203.jpeg)
+
+**Observation:**
+Most applications maintain high average ratings, while the percentage of low ratings varies across apps.
+This highlights differences in user satisfaction and perceived quality between competing AI note-taking applications.
+
+---
+
 ## ✅ Key Takeaways (Part A & B)
 
 * Query-based ingestion improves flexibility and scalability
 * Pagination with continuation tokens enables richer datasets
 * Append-mode writing increases robustness against failures
 * Clear separation between ingestion, transformation, serving, and visualization logic
-* The pipeline produces stable, analytics-ready data suitable for downstream use
-
+* Dashboard screenshots confirm that the pipeline produces usable and interpretable analytics outputs
 
