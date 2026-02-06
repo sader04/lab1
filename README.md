@@ -182,3 +182,7 @@ This highlights differences in user satisfaction and perceived quality between c
 * Clear separation between ingestion, transformation, serving, and visualization logic
 * Dashboard screenshots confirm that the pipeline produces usable and interpretable analytics outputs
 
+---
+By:
+* DERBANI Salwa
+* KOUDIA Selma
