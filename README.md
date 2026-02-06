@@ -168,16 +168,3 @@ All required changes were localized to the transformation layer, leaving serving
 
 ---
 
-## 🧠 Key Takeaways
-
-* Early-stage pipelines are highly sensitive to schema and format changes
-* Explicit full-refresh logic improves reproducibility
-* Clear separation between ingestion, transformation, and serving layers reduces maintenance cost
-* Data quality issues should be exposed, not hidden
-
----
-
-## ✅ Conclusion
-
-This lab demonstrates the complete lifecycle of a Python-based data pipeline and highlights why more structured tools (schemas, contracts, orchestration frameworks) become necessary as systems evolve.
-
