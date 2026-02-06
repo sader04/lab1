@@ -1,0 +1,4 @@
+appId,title,num_reviews,avg_rating,pct_low_rating,avg_sentiment_score,pct_positive_sentiment,pct_negative_sentiment,total_contradictions,contradiction_rate,avg_sentiment_gap,total_positive_words,total_negative_words,first_review_date,latest_review_date,contradiction_rate,contradiction_moderate_contradiction
+com.newnote.ai,NewNote,3,1.667,66.667,-0.333,0.0,33.333,1,33.333,0.667,0,1,2025-02-10 11:30:00,2025-02-10 12:30:00,33.333,1.0
+com.notewise.ai,Notewise,2,3.5,0.0,0.0,0.0,0.0,0,0.0,0.167,0,0,2025-02-10 10:00:00,2025-02-10 10:15:00,0.0,
+com.otter.ai,Otter AI Duplicate,3,2.0,50.0,0.25,50.0,25.0,2,50.0,0.625,2,1,2025-02-10 09:00:00,2025-02-10 11:00:00,50.0,2.0

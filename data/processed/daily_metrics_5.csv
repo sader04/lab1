@@ -1,0 +1,2 @@
+date,daily_num_reviews,daily_avg_rating,daily_avg_sentiment,daily_contradictions,daily_contradiction_rate,daily_positive_pct,daily_negative_pct,daily_sentiment_gap
+2025-02-10,7,2.143,0.0,3,33.333,22.222,22.222,0.556

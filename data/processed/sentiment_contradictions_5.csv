@@ -1,0 +1,4 @@
+app_id,app_name,reviewId,userName,score,rating_category,content,text_sentiment_score,text_sentiment_label,sentiment_strength,sentiment_rating_gap,contradiction_type,normalized_numeric_score,positive_word_count,negative_word_count,at
+com.otter.ai,Otter AI Duplicate,r_2101,Imane,,,Love it!,1.0,positive,Positive,1.0,moderate_contradiction,0.0,1,0,2025-02-10 09:00:00
+com.otter.ai,Otter AI Duplicate,r_2102,Ali,-1.0,,Worst update ever.,-1.0,negative,Negative,1.0,moderate_contradiction,-2.0,0,1,2025-02-10 09:30:00
+com.newnote.ai,NewNote,r_2110,Noor,1.0,Low,Crashes often.,0.0,neutral,Neutral,1.0,moderate_contradiction,-1.0,0,0,2025-02-10 12:30:00

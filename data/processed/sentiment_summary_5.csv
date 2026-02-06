@@ -1,0 +1,2 @@
+total_reviews,total_contradictions,contradiction_rate_pct,avg_sentiment_score,avg_rating,avg_sentiment_gap,positive_reviews_pct,negative_reviews_pct,neutral_reviews_pct,apps_with_contradictions,total_apps
+10,3,30.0,0.0,2.25,0.5,20.0,20.0,60.0,2,3
