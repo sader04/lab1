@@ -1,8 +1,6 @@
-#  Lab 1 – Python-only Data Pipeline
-**Product Analytics – AI Note-Taking Applications**
 
 
----
+
 Feedback:
 - You are limiting the possibilities of your code as you list the apps to search for, use a query term rather than app id.
 
@@ -14,8 +12,10 @@ Feedback:
 
 - Please add a screenshot of your dashboard to the readmefile
 
+---
 
-
+#  Lab 1 – Python-only Data Pipeline
+**Product Analytics – AI Note-Taking Applications**
 ---
 
 ##  Project Overview
