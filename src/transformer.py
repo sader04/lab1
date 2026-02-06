@@ -14,7 +14,7 @@ PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 # ==============================
 # Configuration
 # ==============================
-USE_CSV_BATCH = True
+USE_CSV_BATCH = False
 # False → normal pipeline (JSONL)
 # True  → C1 New Reviews Batch (CSV)
 APPS_RAW = RAW_DIR / "apps_raw.json"
@@ -113,8 +113,44 @@ if "reviewId" in reviews_df.columns:
 # ==============================
 app_lookup = apps_df.set_index("appId")["title"].to_dict()
 
-reviews_df["app_name"] = reviews_df["app_id"].map(app_lookup)
-reviews_df["app_name"] = reviews_df["app_name"].fillna("UNKNOWN_APP")
+# Automatic app ID matching function
+def find_app_name(app_id):
+    # First try exact match
+    if app_id in app_lookup:
+        return app_lookup[app_id]
+    
+    # Extract key parts of the app ID for matching
+    app_parts = app_id.lower().replace('.ai', '').replace('.com', '').split('.')
+    app_keywords = [part for part in app_parts if len(part) > 2]
+    
+    # Try to find best match among known apps
+    best_match = None
+    best_score = 0
+    
+    for known_id, title in app_lookup.items():
+        known_parts = known_id.lower().replace('.ai', '').replace('.com', '').split('.')
+        known_keywords = [part for part in known_parts if len(part) > 2]
+        
+        # Calculate similarity score
+        score = 0
+        for app_kw in app_keywords:
+            for known_kw in known_keywords:
+                if app_kw == known_kw:
+                    score += 3  # Exact keyword match
+                elif app_kw in known_kw or known_kw in app_kw:
+                    score += 1  # Partial match
+        
+        # Bonus for domain similarity
+        if any(part in known_id.lower() for part in app_parts):
+            score += 2
+            
+        if score > best_score and score >= 3:  # Minimum threshold
+            best_score = score
+            best_match = title
+    
+    return best_match if best_match else "UNKNOWN_APP"
+
+reviews_df["app_name"] = reviews_df["app_id"].apply(find_app_name)
 
 reviews_df = reviews_df[[
     "app_id", "app_name", "reviewId",

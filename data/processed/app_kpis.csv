@@ -1,4 +1,21 @@
 appId,title,num_reviews,avg_rating,pct_low_rating,first_review_date,latest_review_date
-com.evernote,Evernote - Note Organizer,100,1.75,82.0,2025-12-27 16:57:17,2026-01-10 20:41:44
-com.microsoft.office.onenote,Microsoft OneNote: Save Notes,100,3.64,28.0,2026-01-04 18:42:54,2026-01-10 23:36:55
-notion.id,"Notion: Notes, Tasks, AI",100,3.94,24.0,2026-01-01 18:27:46,2026-01-10 18:28:00
+ai.fireflies.mobile,Fireflies: AI notetaker,291,3.921,22.34,2023-09-04 16:54:48,2026-02-01 23:39:44
+ai.meeting.app,Meeting.ai: AI Visual Notes,128,4.367,13.28,2024-07-02 02:26:37,2026-02-04 15:39:23
+ai.notes.notebook,HyNote: AI Notebook LLM Notes,254,4.047,18.11,2024-12-13 18:27:18,2026-02-02 02:43:52
+ai.plaud.android.plaud,Plaud: AI Note Taker,1000,4.56,8.1,2024-09-13 14:09:15,2026-02-04 15:58:40
+ai.turbolearn,Turbo AI - Notetaker,12777,4.421,8.37,2024-08-20 03:39:26,2026-02-04 17:23:19
+app.coconote,Coconote - AI Note Taker,163,3.828,26.38,2025-04-24 04:45:15,2026-02-04 09:10:21
+com.aisense.otter,OtterAI Transcribe Voice Notes,1000,3.059,44.5,2024-02-16 23:09:27,2026-02-02 17:21:31
+com.codespaceapps.meetingtranscriber,Smart Noter - AI Note Taker,1000,3.716,27.6,2025-07-26 18:42:59,2026-02-04 12:56:02
+com.feraset.ainote,AI Note Taker - Meeting Notes,75,3.507,36.0,2024-08-31 17:34:42,2026-01-21 11:08:34
+com.goodnotes.android.app,"Goodnotes: AI Notes, Docs, PDF",1000,2.36,61.0,2025-07-06 15:59:38,2026-02-04 07:09:07
+com.google.android.apps.labs.language.tailwind,Google NotebookLM,7528,4.315,11.38,2025-05-19 14:55:33,2026-02-04 17:26:42
+com.hubx.noteai,Note AI: Smart Note Taker,489,3.591,32.11,2025-03-04 13:14:43,2026-02-04 06:58:53
+com.ma.waveapp,Wave AI Note Taker & Recorder,259,3.34,38.22,2024-08-01 19:18:29,2026-02-04 01:07:28
+com.meetgeek.assistant,AI Transcribe. Speech to Text,70,3.843,25.71,2023-12-08 12:50:03,2026-02-02 15:43:39
+com.recordpro.audiorecord,HiNoter - AI Note Taker,29,3.897,17.24,2025-09-09 09:45:35,2026-01-31 11:37:18
+com.sota.ainotex,NoteX: AI Notes & Meetings,106,3.67,28.3,2024-11-05 19:04:57,2026-02-02 05:19:05
+com.studocu.app,Studocu: AI Notes & Summaries,1000,4.32,11.6,2024-03-06 07:37:19,2026-02-04 08:09:05
+com.yygg.note.app,"Notewise - AI Notes, PDF, Docs",1000,3.72,26.7,2025-07-10 11:58:18,2026-02-04 15:17:56
+io.labhouse.audioapp,Summary - AI Note Taker,989,4.046,19.11,2025-10-01 14:25:51,2026-02-04 15:22:18
+notion.id,"Notion: Notes, Tasks, AI",1000,3.941,21.4,2025-11-04 03:22:41,2026-02-04 16:56:18

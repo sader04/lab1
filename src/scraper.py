@@ -55,8 +55,10 @@ with REVIEWS_PATH.open("a", encoding="utf-8") as f:
     for app_id in app_ids:
         print(f"Fetching reviews for {app_id}")
         continuation_token = None
+        page_count = 0
+        max_pages = 5  # Safety limit (e.g., 5 * 200 = 1000 reviews max per app)
 
-        while True:
+        while page_count < max_pages:
             try:
                 result, continuation_token = reviews(
                     app_id,
@@ -66,14 +68,23 @@ with REVIEWS_PATH.open("a", encoding="utf-8") as f:
                     count=REVIEWS_PER_PAGE,
                     continuation_token=continuation_token
                 )
+                #stop if no more reviews
+                if not result:
+                    print(f"  → No more reviews for {app_id}")
+                    break
 
+                print(f"  → Fetched {len(result)} reviews (page {page_count + 1})")
                 for r in result:
                     r["appId"] = app_id
                     r["_extracted_at"] = datetime.utcnow().isoformat()
                     f.write(json.dumps(r, default=str, ensure_ascii=False) + "\n")
-
+                
+                #break if no more pages
                 if continuation_token is None:
+                    print(f"  → End of reviews for {app_id}")
                     break
+                
+                page_count += 1
 
             except Exception as e:
                 print(f"[ERROR] Reviews {app_id}: {e}")
