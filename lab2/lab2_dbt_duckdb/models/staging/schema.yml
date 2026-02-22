@@ -1,0 +1,57 @@
+version: 2
+
+models:
+  - name: stg_playstore_apps
+    description: "Staging model for Google Play Store apps data"
+    columns:
+      - name: app_id
+        description: "Unique identifier for the app"
+        tests:
+          - unique
+          - not_null
+      - name: app_name
+        description: "Name of the app"
+        tests:
+          - not_null
+      - name: developer_name
+        description: "Developer name"
+        tests:
+          - not_null
+      - name: rating
+        description: "App rating"
+        tests:
+          - not_null
+      - name: app_key
+        description: "Surrogate key for the app"
+        tests:
+          - unique
+          - not_null
+
+  - name: stg_playstore_reviews
+    description: "Staging model for Google Play Store reviews data"
+    columns:
+      - name: review_id
+        description: "Unique identifier for the review"
+        tests:
+          - not_null
+      - name: app_id
+        description: "App identifier that links to stg_playstore_apps"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('stg_playstore_apps')
+              field: app_id
+      - name: rating
+        description: "Review rating (1-5)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1, 2, 3, 4, 5]
+      - name: review_key
+        description: "Surrogate key for the review"
+        tests:
+          - not_null
+      - name: date_key
+        description: "Date key in YYYYMMDD format for joining with date dimension"
+        tests:
+          - not_null

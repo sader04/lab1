@@ -1,0 +1,83 @@
+version: 2
+
+models:
+  - name: dim_date
+    description: "Date dimension for time-based analysis"
+    columns:
+      - name: date_key
+        description: "Surrogate key in YYYYMMDD format"
+        tests:
+          - unique
+          - not_null
+      - name: full_date
+        description: "Full date"
+        tests:
+          - not_null
+
+  - name: dim_developers
+    description: "Developer dimension"
+    columns:
+      - name: developer_key
+        description: "Surrogate key for developer"
+        tests:
+          - unique
+          - not_null
+      - name: natural_developer_id
+        description: "Natural key from source"
+        tests:
+          - unique
+          - not_null
+      - name: developer_name
+        description: "Developer name"
+        tests:
+          - not_null
+
+  - name: dim_categories
+    description: "Category dimension"
+    columns:
+      - name: category_key
+        description: "Surrogate key for category"
+        tests:
+          - unique
+          - not_null
+      - name: natural_category_id
+        description: "Natural key from source"
+        tests:
+          - unique
+          - not_null
+      - name: category_name
+        description: "Category name"
+        tests:
+          - not_null
+
+  - name: dim_apps
+    description: "Apps dimension"
+    columns:
+      - name: app_key
+        description: "Surrogate key for app"
+        tests:
+          - unique
+          - not_null
+      - name: natural_app_id
+        description: "Natural key from source (appId)"
+        tests:
+          - unique
+          - not_null
+      - name: app_name
+        description: "App name"
+        tests:
+          - not_null
+      - name: developer_key
+        description: "Foreign key to dim_developers"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_developers')
+              field: developer_key
+      - name: category_key
+        description: "Foreign key to dim_categories"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_categories')
+              field: category_key

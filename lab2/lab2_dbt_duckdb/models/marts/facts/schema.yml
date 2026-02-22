@@ -1,0 +1,69 @@
+version: 2
+
+models:
+  - name: fact_reviews
+    description: "Fact table for app reviews, one row per review"
+    columns:
+      - name: fact_review_key
+        description: "Surrogate key for the fact record"
+        tests:
+          - unique
+          - not_null
+      - name: date_key
+        description: "Foreign key to dim_date"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_date')
+              field: date_key
+      - name: app_key
+        description: "Foreign key to dim_apps"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_apps')
+              field: app_key
+      - name: developer_key
+        description: "Foreign key to dim_developers"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_developers')
+              field: developer_key
+      - name: category_key
+        description: "Foreign key to dim_categories"
+        tests:
+          - not_null
+          - relationships:
+              to: ref('dim_categories')
+              field: category_key
+      - name: rating
+        description: "Review rating (1-5)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1, 2, 3, 4, 5]
+      - name: thumbs_up_count
+        description: "Number of thumbs up on the review"
+        tests:
+          - not_null
+      - name: review_timestamp
+        description: "Timestamp when review was posted"
+        tests:
+          - not_null
+      - name: is_positive_review
+        description: "Flag for reviews with rating >= 4"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      - name: is_negative_review
+        description: "Flag for reviews with rating <= 2"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      - name: review_count
+        description: "Count of reviews (always 1 for grain)"
+        tests:
+          - not_null
