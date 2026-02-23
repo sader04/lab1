@@ -14,7 +14,7 @@ PROCESSED_DIR.mkdir(parents=True, exist_ok=True)
 # ==============================
 # Configuration
 # ==============================
-USE_CSV_BATCH = False
+USE_CSV_BATCH = True
 # False → normal pipeline (JSONL)
 # True  → C1 New Reviews Batch (CSV)
 APPS_RAW = RAW_DIR / "apps_raw.json"

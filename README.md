@@ -31,7 +31,7 @@ lab1/
 ├── data/
 │   ├── raw/                # Raw upstream data (JSON, JSONL)
 │   └── processed/          # Cleaned & aggregated datasets
-├── screenshots/            # Dashboard screenshots
+├── screenshots/            # Dashboard screenshots and visualizations
 ├── src/
 │   ├── scraper.py          # Data acquisition (Google Play API)
 │   ├── transformer.py      # Data cleaning & transformation
@@ -41,6 +41,8 @@ lab1/
 │   └── dashboard.py        # Dashboard visualization
 ├── STRESS_TESTING_C1.md    # Stress testing documentation
 ├── STRESS_TESTING_C2.md    # Schema drift documentation
+├── RAPPORT_FINAL.md        # Executive summary report
+├── RAPPORT_COMPLET_EXPLICATIF.md  # Detailed methodology and analysis
 └── README.md
 
 lab2/
@@ -145,8 +147,25 @@ These outputs are designed for reporting and visualization purposes.
 
 ## 📊 Dashboard Results – Part A & B
 
-### Daily Number of Reviews
+### 📸 Visualizations Available
 
+All dashboard screenshots are available in the [`screenshots/`](screenshots/) directory:
+
+#### Main Dashboard Visualizations
+- **Daily Number of Reviews** → `part AB 1.jpeg`
+- **Daily Average Rating Over Time** → `part AB 2.jpeg`  
+- **Average Rating per Application** → `part AB 3.jpeg`
+
+#### Stress Testing Results
+- **C1 - New Reviews Batch** → `daily averge c1 .png`, `daily number c1 .png`
+- **C2 - Schema Drift** → `daily average c2.png`, `daily number c2.png`, `average rating c2.png`
+
+#### Additional Visualizations
+- Various dashboard states and analyses → `image-*.png`, `img.png`
+
+### 📈 Key Insights from Visualizations
+
+#### Daily Number of Reviews
 ![Daily Number of Reviews](screenshots/part%20AB%201.jpeg)
 
 **Observation:**
@@ -155,8 +174,7 @@ This indicates growing adoption and engagement with AI note-taking applications.
 
 ---
 
-### Daily Average Rating Over Time
-
+#### Daily Average Rating Over Time
 ![Daily Average Rating](screenshots/part%20AB%202.jpeg)
 
 **Observation:**
@@ -165,13 +183,31 @@ These fluctuations may be linked to application updates or changes affecting use
 
 ---
 
-### Average Rating per Application and Percentage of Low Ratings
-
+#### Average Rating per Application and Percentage of Low Ratings
 ![Average Rating per App](screenshots/part%20AB%203.jpeg)
 
 **Observation:**
 Most applications maintain high average ratings, while the percentage of low ratings varies across apps.
 This highlights differences in user satisfaction and perceived quality between competing AI note-taking applications.
+
+---
+
+## 📋 Detailed Reports & Analysis
+
+### 📄 Executive Summary
+- **File**: [`RAPPORT_FINAL.md`](RAPPORT_FINAL.md)
+- **Content**: Complete project overview with key results and recommendations
+- **Audience**: Management and stakeholders
+
+### 🔬 Detailed Methodology Report  
+- **File**: [`RAPPORT_COMPLET_EXPLICATIF.md`](RAPPORT_COMPLET_EXPLICATIF.md)
+- **Content**: Step-by-step methodology, code explanations, and in-depth analysis
+- **Audience**: Technical team and data engineers
+
+### 🧪 Stress Testing Documentation
+- **Files**: [`STRESS_TESTING_C1.md`](STRESS_TESTING_C1.md), [`STRESS_TESTING_C2.md`](STRESS_TESTING_C2.md)
+- **Content**: Detailed analysis of pipeline robustness under various scenarios
+- **Audience**: Quality assurance and DevOps teams
 
 ---
 
